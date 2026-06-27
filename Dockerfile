@@ -13,8 +13,9 @@ RUN apt-get update \
 # Apache: aktifkan mod_rewrite + mod_headers
 RUN a2enmod rewrite headers deflate
 
-# FIX: Matikan MPM Event agar tidak bentrok saat dijalankan di Railway
-RUN a2dismod mpm_event || true \
+# FIX TOTAL: Hapus paksa load file mpm_event agar tidak bentrok sama mpm_prefork
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+ && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
  && a2enmod mpm_prefork || true
 
 # Copy source

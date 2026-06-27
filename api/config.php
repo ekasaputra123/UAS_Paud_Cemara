@@ -43,8 +43,8 @@ $config = [
         'port'     => '5433',
         'dbname'   => 'paud_cemara',
         'user'     => 'postgres',
-        'password' => '',
-        'sslmode'  => '',
+        'password' => 'admin123',
+        'sslmode'  => 'require',
     ],
 
     // Origin yang diizinkan untuk CORS (boleh lebih dari satu, pisahkan

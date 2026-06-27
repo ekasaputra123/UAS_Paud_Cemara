@@ -13,11 +13,6 @@ RUN apt-get update \
 # Apache: aktifkan mod_rewrite + mod_headers
 RUN a2enmod rewrite headers deflate
 
-# FIX TOTAL: Hapus paksa load file mpm_event agar tidak bentrok sama mpm_prefork
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
- && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
- && a2enmod mpm_prefork || true
-
 # Copy source
 COPY . /var/www/html/
 
@@ -47,4 +42,4 @@ RUN sed -ri 's!Listen 80!Listen ${PORT}!' /etc/apache2/ports.conf \
  && sed -ri 's!<VirtualHost \*:80>!<VirtualHost *:${PORT}>!' /etc/apache2/sites-enabled/000-default.conf
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "rm -f /etc/apache2/mods-enabled/mpm_event.* && exec apache2-foreground"]

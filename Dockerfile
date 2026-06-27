@@ -13,6 +13,10 @@ RUN apt-get update \
 # Apache: aktifkan mod_rewrite + mod_headers
 RUN a2enmod rewrite headers deflate
 
+# FIX: Matikan MPM Event agar tidak bentrok saat dijalankan di Railway
+RUN a2dismod mpm_event || true \
+ && a2enmod mpm_prefork || true
+
 # Copy source
 COPY . /var/www/html/
 

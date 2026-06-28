@@ -86,6 +86,24 @@ $config['db']['user'] = (string)cfgEnvValue('PAUD_DB_USER', $config['db']['user'
 $config['db']['password'] = (string)cfgEnvValue('PAUD_DB_PASS', $config['db']['password']);
 $config['db']['sslmode'] = (string)cfgEnvValue('PAUD_DB_SSLMODE', $config['db']['sslmode']);
 
+$databaseUrl = getenv('DATABASE_URL');
+if ($databaseUrl) {
+    $parsed = parse_url($databaseUrl);
+    if ($parsed) {
+        $config['db']['host'] = $parsed['host'] ?? $config['db']['host'];
+        $config['db']['port'] = (string)($parsed['port'] ?? $config['db']['port']);
+        $config['db']['user'] = $parsed['user'] ?? $config['db']['user'];
+        $config['db']['password'] = $parsed['pass'] ?? $config['db']['password'];
+        $config['db']['dbname'] = ltrim($parsed['path'] ?? '', '/') ?: $config['db']['dbname'];
+        if (!empty($parsed['query'])) {
+            parse_str($parsed['query'], $queryParts);
+            if (isset($queryParts['sslmode'])) {
+                $config['db']['sslmode'] = $queryParts['sslmode'];
+            }
+        }
+    }
+}
+
 $config['cors_origin'] = (string)cfgEnvValue('PAUD_CORS_ORIGIN', $config['cors_origin']);
 $config['debug'] = cfgEnvBool('PAUD_DEBUG', (bool)$config['debug']);
 $config['upload_dir'] = (string)cfgEnvValue('PAUD_UPLOAD_DIR', $config['upload_dir']);

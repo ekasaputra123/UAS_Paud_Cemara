@@ -40,11 +40,11 @@ if (!function_exists('cfgEnvBool')) {
 $config = [
     'db' => [
         'host'     => 'localhost',
-        'port'     => '5433',
+        'port'     => '5432',
         'dbname'   => 'paud_cemara',
         'user'     => 'postgres',
-        'password' => '',
-        'sslmode'  => '',
+        'password' => 'admin123',
+        'sslmode'  => 'require',
     ],
 
     // Origin yang diizinkan untuk CORS (boleh lebih dari satu, pisahkan
@@ -79,23 +79,11 @@ if (is_file($localConfigPath)) {
     }
 }
 
-$databaseUrl = getenv('DATABASE_URL');
-if ($databaseUrl) {
-    $parsed = parse_url($databaseUrl);
-    if ($parsed) {
-        $config['db']['host'] = $parsed['host'] ?? $config['db']['host'];
-        $config['db']['port'] = (string)($parsed['port'] ?? $config['db']['port']);
-        $config['db']['user'] = $parsed['user'] ?? $config['db']['user'];
-        $config['db']['password'] = $parsed['pass'] ?? $config['db']['password'];
-        $config['db']['dbname'] = ltrim($parsed['path'] ?? '', '/') ?: $config['db']['dbname'];
-    }
-}
-
-$config['db']['host'] = (string)cfgEnvValue('PAUD_DB_HOST', cfgEnvValue('PGHOST', $config['db']['host']));
-$config['db']['port'] = (string)cfgEnvValue('PAUD_DB_PORT', cfgEnvValue('PGPORT', $config['db']['port']));
-$config['db']['dbname'] = (string)cfgEnvValue('PAUD_DB_NAME', cfgEnvValue('PGDATABASE', $config['db']['dbname']));
-$config['db']['user'] = (string)cfgEnvValue('PAUD_DB_USER', cfgEnvValue('PGUSER', $config['db']['user']));
-$config['db']['password'] = (string)cfgEnvValue('PAUD_DB_PASS', cfgEnvValue('PGPASSWORD', $config['db']['password']));
+$config['db']['host'] = (string)cfgEnvValue('PAUD_DB_HOST', $config['db']['host']);
+$config['db']['port'] = (string)cfgEnvValue('PAUD_DB_PORT', $config['db']['port']);
+$config['db']['dbname'] = (string)cfgEnvValue('PAUD_DB_NAME', $config['db']['dbname']);
+$config['db']['user'] = (string)cfgEnvValue('PAUD_DB_USER', $config['db']['user']);
+$config['db']['password'] = (string)cfgEnvValue('PAUD_DB_PASS', $config['db']['password']);
 $config['db']['sslmode'] = (string)cfgEnvValue('PAUD_DB_SSLMODE', $config['db']['sslmode']);
 
 $config['cors_origin'] = (string)cfgEnvValue('PAUD_CORS_ORIGIN', $config['cors_origin']);
